@@ -16,13 +16,14 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.chunkywizard.ReactJSMobileApp"
     },
-    "android": {
-      "adaptiveIcon": {
+"android": {
+    "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.chunkywizard.ReactJSMobileApp"
     },
+    "package": "com.chunkywizard.ReactJSMobileApp",
+    "versionCode": 34
+},
     "web": {
       "favicon": "./assets/favicon.png"
     },
