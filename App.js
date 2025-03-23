@@ -6,7 +6,7 @@ import ListContainer from './components/ListContainer';
 import CharacterForm from './components/CharacterForm';
 import Synopsis from './components/Synopsis';
 
-const API_URL = 'https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters';
+const API_URL = 'https://i0p044nu8c.execute-api.us-east-1.amazonaws.com/prod/characters';
 
 export default function App() {
   const [animeData, setAnimeData] = useState(null);
