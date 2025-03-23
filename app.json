@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "jsEngine": "jsc",
+    "newArchEnabled": false,  
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -16,14 +17,14 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.chunkywizard.ReactJSMobileApp"
     },
-"android": {
-    "adaptiveIcon": {
+    "android": {
+      "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.chunkywizard.ReactJSMobileApp",
+      "versionCode": 34
     },
-    "package": "com.chunkywizard.ReactJSMobileApp",
-    "versionCode": 34
-},
     "web": {
       "favicon": "./assets/favicon.png"
     },

@@ -1,5 +1,5 @@
-// components/CharacterForm.js
-import { StyleSheet, View, TextInput, Button, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function CharacterForm({ character, onChange, onSubmit, title }) {
   return (
@@ -7,56 +7,60 @@ export default function CharacterForm({ character, onChange, onSubmit, title }) 
       <Text style={styles.title}>{title}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Character Name"
+        placeholder="Name"
+        placeholderTextColor="#aaa"
         value={character.name}
         onChangeText={(text) => onChange({ ...character, name: text })}
-        placeholderTextColor="#999"
       />
       <TextInput
         style={styles.input}
         placeholder="Anime"
+        placeholderTextColor="#aaa"
         value={character.anime}
         onChangeText={(text) => onChange({ ...character, anime: text })}
-        placeholderTextColor="#999"
       />
       <TextInput
         style={styles.input}
         placeholder="Power Level"
-        keyboardType="numeric"
+        placeholderTextColor="#aaa"
         value={character.powerLevel}
         onChangeText={(text) => onChange({ ...character, powerLevel: text })}
-        placeholderTextColor="#999"
       />
-      <Button title="Submit" onPress={onSubmit} color="#007AFF" />
+      <TouchableOpacity style={styles.button} onPress={onSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    backgroundColor: '#222',
+    padding: 15,
+    borderRadius: 5,
+    marginBottom: 20,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.8)',  // Web-friendly shadow
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
+    backgroundColor: '#444',
+    color: '#fff',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
     fontSize: 16,
-    backgroundColor: '#fff',
   },
 });

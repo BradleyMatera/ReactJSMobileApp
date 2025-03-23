@@ -4,15 +4,16 @@
   "version": "3.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "build": "expo export"
+    "start": "npx react-native start",
+    "build": "npx react-native start --reset-cache",
+    "ios": "npx react-native run-ios",
+    "web": "webpack serve --mode development --open",
+    "build:web": "webpack --mode production"
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
     "@expo/vector-icons": "^14.0.4",
+    "aws-sdk": "^2.1692.0",
     "expo": "^52.0.18",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",
@@ -23,10 +24,28 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.26.0",
     "@expo/metro-config": "~0.19.7",
-    "@react-native-community/cli": "^18.0.0",
+    "@react-native-community/cli": "^15.0.0",
+    "babel-loader": "^9.2.1",
+    "html-webpack-plugin": "^5.6.3",
+    "ts-loader": "^9.5.2",
     "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.0"
   },
-  "private": true
+  "private": true,
+  "description": "A React Native Mobile Application powered by Expo, designed to fetch and display anime and character data using APIs. The app is optimized for deployment on mobile (Expo) and web (Vercel), showcasing a responsive design and seamless functionality across platforms.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BradleyMatera/ReactJSMobileApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/BradleyMatera/ReactJSMobileApp/issues"
+  },
+  "homepage": "https://github.com/BradleyMatera/ReactJSMobileApp#readme"
 }

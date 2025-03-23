@@ -1,47 +1,49 @@
-// components/ListItem.js
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ListItem({ title, subtitle, onDelete, onPress }) {
+export default function ListItem({ item, onDelete, onSelect }) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity onPress={() => onSelect(item)} style={styles.item}>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.anime}>{item.anime}</Text>
+        <Text style={styles.power}>{item.powerLevel}</Text>
       </View>
-      <TouchableOpacity onPress={onDelete} style={styles.deleteButton}>
-        <Ionicons name="trash-outline" size={24} color="#fff" />
+      <TouchableOpacity onPress={() => onDelete(item.id)} style={styles.deleteButton}>
+        <Ionicons name="trash-outline" size={24} color="#ff4444" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 8,
-    marginVertical: 4,
-    marginHorizontal: 8,
+    padding: 10,
+    backgroundColor: '#333',
+    marginBottom: 10,
+    borderRadius: 5,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.8)',  // Web-friendly shadow
   },
   textContainer: {
     flex: 1,
   },
-  title: {
+  name: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    color: '#fff',
   },
-  subtitle: {
+  anime: {
     fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+    color: '#aaa',
+  },
+  power: {
+    fontSize: 14,
+    color: '#aaa',
   },
   deleteButton: {
-    padding: 4,
+    padding: 5,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, View, ActivityIndicator, TextInput, Button, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, ActivityIndicator } from 'react-native';
 import Heading from './components/Heading';
 import ListContainer from './components/ListContainer';
 import CharacterForm from './components/CharacterForm';

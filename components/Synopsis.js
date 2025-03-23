@@ -1,24 +1,14 @@
-// components/Synopsis.js
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text } from 'react-native';
 
 export default function Synopsis({ children }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{children}</Text>
-    </View>
-  );
+  return <Text style={styles.synopsis}>{children}</Text>;
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 14,
-    lineHeight: 20,
+  synopsis: {
+    fontSize: 16,
+    color: '#ccc',
+    marginBottom: 20,
   },
 });
