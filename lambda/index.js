@@ -8,7 +8,7 @@ exports.handler = async (event) => {
   try {
     if (httpMethod === 'GET' && !pathParameters) {
       const data = await dynamodb.scan({ TableName: tableName }).promise();
-      return { statusCode: 200, body: JSON.stringify(data.Items) };
+      return { statusCode: 200, body: JSON.stringify(data.Items || []) };  // Ensure array
     } else if (httpMethod === 'GET' && pathParameters) {
       const data = await dynamodb.get({
         TableName: tableName,
