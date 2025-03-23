@@ -1,6 +1,5 @@
-// App.js
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, View, ActivityIndicator, TextInput, Button, Text } from 'react-native';
 import Heading from './components/Heading';
 import ListContainer from './components/ListContainer';
 import CharacterForm from './components/CharacterForm';
@@ -23,13 +22,11 @@ export default function App() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      // Fetch random anime
       const animeResponse = await fetch('https://api.jikan.moe/v4/random/anime');
       const animeJson = await animeResponse.json();
       setAnimeData(animeJson.data);
       setBackgroundImage(animeJson.data?.images?.jpg?.large_image_url);
 
-      // Fetch characters
       const charactersResponse = await fetch(API_URL);
       const charactersJson = await charactersResponse.json();
       setCharacters(charactersJson);
@@ -58,13 +55,13 @@ export default function App() {
   const updateCharacter = async () => {
     if (!selectedCharacter) return;
     try {
-      const response = await fetch(`${API_URL}/${selectedCharacter._id}`, {
+      const response = await fetch(`${API_URL}/${selectedCharacter.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(selectedCharacter),
       });
       const data = await response.json();
-      setCharacters(characters.map(char => char._id === data._id ? data : char));
+      setCharacters(characters.map(char => char.id === data.id ? data : char));
       setSelectedCharacter(null);
     } catch (error) {
       console.error('Error updating character:', error);
@@ -74,14 +71,10 @@ export default function App() {
   const deleteCharacter = async (id) => {
     try {
       await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-      setCharacters(characters.filter(char => char._id !== id));
+      setCharacters(characters.filter(char => char.id !== id));
     } catch (error) {
       console.error('Error deleting character:', error);
     }
-  };
-
-  const handleSelectCharacter = (character) => {
-    setSelectedCharacter(character);
   };
 
   if (loading) {
@@ -98,20 +91,17 @@ export default function App() {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Heading>{animeData?.title || 'Random Anime'}</Heading>
           <Synopsis>{animeData?.synopsis || 'No synopsis available'}</Synopsis>
-          
-          <ListContainer 
-            data={characters} 
+          <ListContainer
+            data={characters}
             onDelete={deleteCharacter}
-            onSelect={handleSelectCharacter}
+            onSelect={setSelectedCharacter}
           />
-          
           <CharacterForm
             character={newCharacter}
             onChange={setNewCharacter}
             onSubmit={addCharacter}
             title="Add New Character"
           />
-          
           {selectedCharacter && (
             <CharacterForm
               character={selectedCharacter}
@@ -127,21 +117,8 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  background: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 20,
-  },
+  container: { flex: 1, backgroundColor: '#000' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' },
+  background: { flex: 1 },
+  scrollContent: { padding: 16, paddingBottom: 20 },
 });
