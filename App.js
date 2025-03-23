@@ -1,154 +1,127 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, SafeAreaView, ImageBackground, Button, TextInput, View } from 'react-native';
-import Heading from './componants/Heading'; 
-import ListContainer from './componants/ListContainer';
+// App.js
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, View, ActivityIndicator } from 'react-native';
+import Heading from './components/Heading';
+import ListContainer from './components/ListContainer';
+import CharacterForm from './components/CharacterForm';
+import Synopsis from './components/Synopsis';
+
+const API_URL = 'https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters';
 
 export default function App() {
   const [animeData, setAnimeData] = useState(null);
   const [characters, setCharacters] = useState([]);
   const [backgroundImage, setBackgroundImage] = useState(null);
-  const [newCharacter, setNewCharacter] = useState({ name: '', anime: '', powerLevel: '' }); // State for new character creation
-  const [selectedCharacter, setSelectedCharacter] = useState(null); // State for character to update
+  const [newCharacter, setNewCharacter] = useState({ name: '', anime: '', powerLevel: '' });
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch random anime from Jikan API
-    fetch('https://api.jikan.moe/v4/random/anime')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Jikan API Response:', data); // Log the response for debugging
-        if (data && data.data) {
-          setAnimeData(data.data); // Set fetched anime data
-          if (data.data.images && data.data.images.jpg) {
-            setBackgroundImage(data.data.images.jpg.large_image_url); // Set background image
-          }
-        } else {
-          console.error('Unexpected API response format:', data);
-        }
-      })
-      .catch((err) => console.error('Error fetching anime data:', err));
-
-    // Fetch anime characters from your API
-    fetch('https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Your API Response:', data); // Log the response for debugging
-        setCharacters(data); // Set characters data
-      })
-      .catch((err) => console.error('Error fetching characters:', err));
+    fetchData();
   }, []);
 
-  // Function to add a new character
-  const addCharacter = () => {
-    fetch('https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newCharacter),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Character added:', data);
-        setCharacters([...characters, data]); // Update the character list
-        setNewCharacter({ name: '', anime: '', powerLevel: '' }); // Reset the form
-      })
-      .catch((err) => console.error('Error adding character:', err));
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch random anime
+      const animeResponse = await fetch('https://api.jikan.moe/v4/random/anime');
+      const animeJson = await animeResponse.json();
+      setAnimeData(animeJson.data);
+      setBackgroundImage(animeJson.data?.images?.jpg?.large_image_url);
+
+      // Fetch characters
+      const charactersResponse = await fetch(API_URL);
+      const charactersJson = await charactersResponse.json();
+      setCharacters(charactersJson);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Function to update a character
-  const updateCharacter = () => {
+  const addCharacter = async () => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCharacter),
+      });
+      const data = await response.json();
+      setCharacters([...characters, data]);
+      setNewCharacter({ name: '', anime: '', powerLevel: '' });
+    } catch (error) {
+      console.error('Error adding character:', error);
+    }
+  };
+
+  const updateCharacter = async () => {
     if (!selectedCharacter) return;
-
-    fetch(`https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters/${selectedCharacter._id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(selectedCharacter),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Character updated:', data);
-        setCharacters(characters.map((char) => (char._id === data._id ? data : char))); // Update the character list
-        setSelectedCharacter(null); // Reset the selection
-      })
-      .catch((err) => console.error('Error updating character:', err));
+    try {
+      const response = await fetch(`${API_URL}/${selectedCharacter._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selectedCharacter),
+      });
+      const data = await response.json();
+      setCharacters(characters.map(char => char._id === data._id ? data : char));
+      setSelectedCharacter(null);
+    } catch (error) {
+      console.error('Error updating character:', error);
+    }
   };
 
-  // Function to delete a character
-  const deleteCharacter = (id) => {
-    fetch(`https://bradleycruddemo-1b86f27b4c16.herokuapp.com/api/v1/animeCharacters/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        console.log('Character deleted:', id);
-        setCharacters(characters.filter((char) => char._id !== id)); // Remove character from list
-      })
-      .catch((err) => console.error('Error deleting character:', err));
+  const deleteCharacter = async (id) => {
+    try {
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      setCharacters(characters.filter(char => char._id !== id));
+    } catch (error) {
+      console.error('Error deleting character:', error);
+    }
   };
+
+  const handleSelectCharacter = (character) => {
+    setSelectedCharacter(character);
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {backgroundImage ? (
-        <ImageBackground
-          source={{ uri: backgroundImage }}
-          resizeMode="cover"
-          style={styles.background}
-        >
+      <ImageBackground source={{ uri: backgroundImage }} style={styles.background}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           <Heading>{animeData?.title || 'Random Anime'}</Heading>
-          <Text style={styles.synopsis}>{animeData?.synopsis || 'Loading synopsis...'}</Text>
-          <Text style={styles.sectionTitle}>Characters from Your API:</Text>
-          <ListContainer data={characters} onDelete={deleteCharacter} />
+          <Synopsis>{animeData?.synopsis || 'No synopsis available'}</Synopsis>
           
-          {/* Form to Add a New Character */}
-          <View style={styles.form}>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              value={newCharacter.name}
-              onChangeText={(text) => setNewCharacter({ ...newCharacter, name: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Anime"
-              value={newCharacter.anime}
-              onChangeText={(text) => setNewCharacter({ ...newCharacter, anime: text })}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Power Level"
-              keyboardType="numeric"
-              value={newCharacter.powerLevel}
-              onChangeText={(text) => setNewCharacter({ ...newCharacter, powerLevel: text })}
-            />
-            <Button title="Add Character" onPress={addCharacter} />
-          </View>
-
-          {/* Form to Update a Character */}
+          <ListContainer 
+            data={characters} 
+            onDelete={deleteCharacter}
+            onSelect={handleSelectCharacter}
+          />
+          
+          <CharacterForm
+            character={newCharacter}
+            onChange={setNewCharacter}
+            onSubmit={addCharacter}
+            title="Add New Character"
+          />
+          
           {selectedCharacter && (
-            <View style={styles.form}>
-              <TextInput
-                style={styles.input}
-                placeholder="Update Name"
-                value={selectedCharacter.name}
-                onChangeText={(text) => setSelectedCharacter({ ...selectedCharacter, name: text })}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Anime"
-                value={selectedCharacter.anime}
-                onChangeText={(text) => setSelectedCharacter({ ...selectedCharacter, anime: text })}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Update Power Level"
-                keyboardType="numeric"
-                value={selectedCharacter.powerLevel}
-                onChangeText={(text) => setSelectedCharacter({ ...selectedCharacter, powerLevel: text })}
-              />
-              <Button title="Update Character" onPress={updateCharacter} />
-            </View>
+            <CharacterForm
+              character={selectedCharacter}
+              onChange={setSelectedCharacter}
+              onSubmit={updateCharacter}
+              title="Update Character"
+            />
           )}
-        </ImageBackground>
-      ) : (
-        <Text>Loading...</Text>
-      )}
+        </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -156,37 +129,19 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000',
   },
-  background: {
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#000',
   },
-  synopsis: {
-    fontSize: 16,
-    marginVertical: 10,
-    color: 'red',
+  background: {
+    flex: 1,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    color: 'white',
-  },
-  form: {
-    marginVertical: 10,
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 8,
-    width: '90%',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 8,
-    marginVertical: 5,
-    backgroundColor: 'white',
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 20,
   },
 });
