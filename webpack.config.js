@@ -33,9 +33,9 @@ module.exports = {
     extensions: ['.web.js', '.js', '.ts', '.tsx'],
     alias: {
       'react-native$': 'react-native-web',
-      '@react-native/assets-registry': false,  // Mock native module
-      'expo-modules-core': false,             // Mock native module
-      'expo-asset': false,                    // Mock native module
+      '@react-native/assets-registry': false,
+      'expo-modules-core': false,
+      'expo-asset': false,
     },
   },
   plugins: [
